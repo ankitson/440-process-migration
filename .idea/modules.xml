@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/440-process-migration.iml" filepath="$PROJECT_DIR$/440-process-migration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tst/tst.iml" filepath="$PROJECT_DIR$/tst/tst.iml" />
     </modules>
   </component>
 </project>
