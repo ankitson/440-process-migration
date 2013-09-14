@@ -14,12 +14,19 @@ import java.io.Serializable;
 public class TransactionalFileOutputStream extends OutputStream implements Serializable {
 
     private OutputStream outputStream;
+    private boolean migratable;
 
     public TransactionalFileOutputStream(OutputStream os) {
         outputStream = os;
+        migratable = true;
     }
 
     public void write(int b) throws IOException {
+        migratable = false;
         outputStream.write(b);
+        outputStream.close();
+        migratable = true;
+        return;
     }
+
 }

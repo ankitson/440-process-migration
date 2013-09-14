@@ -3,6 +3,7 @@ package io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.concurrent.Semaphore;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,10 +16,12 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
 
     private InputStream inputStream;
     long offset;
+    private boolean migratable;
 
     public TransactionalFileInputStream(InputStream is) {
         inputStream = is;
         offset = 0;
+        migratable = true;
     }
 
     /*
@@ -27,11 +30,17 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
      * no mutexes?
      */
     public int read() throws IOException {
+        migratable = false;
         inputStream.skip(offset);
         int byteRead = inputStream.read();
         offset += 1;
         inputStream.close();
+        migratable = true;
         return byteRead;
+    }
+
+    public boolean isMigratable() {
+        return migratable;
     }
 
 }
