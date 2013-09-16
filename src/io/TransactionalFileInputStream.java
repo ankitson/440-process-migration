@@ -3,19 +3,17 @@ package io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.concurrent.Semaphore;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ankit
- * Date: 9/12/13
- * Time: 6:48 PM
- * To change this template use File | Settings | File Templates.
+ * This class is not thread-safe. If multiple threads need to read from the
+ * same InputStream, they should instantiate separate instances of the class.
+ *
+ * It is resilient to being interrupted by a migration.
  */
 public class TransactionalFileInputStream extends InputStream implements Serializable {
 
     private InputStream inputStream;
-    long offset;
+    private int offset;
     private boolean migratable;
 
     public TransactionalFileInputStream(InputStream is) {
@@ -27,7 +25,6 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
     /*
      * this one doesnt try to skop again iff skip returns < offset
      * opens and closes every single read rather than only before migration
-     * no mutexes?
      */
     public int read() throws IOException {
         migratable = false;
@@ -39,6 +36,12 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
         return byteRead;
     }
 
+    /*
+     * Returns whether it is safe to migrate a process holding this instance
+     * of the stream. It is not safe to migrate during reads, since that may
+     * result in an inconsistent state between what has actually been read and
+     * the offset into the stream.
+     */
     public boolean isMigratable() {
         return migratable;
     }
