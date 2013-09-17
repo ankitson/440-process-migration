@@ -1,3 +1,5 @@
+package lab1;
+
 import java.io.Serializable;
 
 /**
@@ -12,11 +14,6 @@ public interface MigratableProcess extends Runnable, Serializable {
      * Suspend this process
      */
     public void suspend();
-
-    /*
-     * Resume this process
-     */
-    public void resume();
 
     public String toString();
 

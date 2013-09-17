@@ -1,3 +1,7 @@
+package lab1.processes;
+
+import lab1.MigratableProcess;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ankit
@@ -49,5 +53,9 @@ public class CountingProcess implements MigratableProcess {
 
     public String toString() {
         return "Counting process at: " + counter;
+    }
+
+    public boolean isReadyToMigrate() {
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package io;
+package lab1.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class TransactionalFileInputStream extends InputStream implements Serializable {
 
     private InputStream inputStream;
-    private int offset;
+    private long offset;
     private boolean migratable;
 
     public TransactionalFileInputStream(InputStream is) {
@@ -30,7 +30,9 @@ public class TransactionalFileInputStream extends InputStream implements Seriali
         migratable = false;
         inputStream.skip(offset);
         int byteRead = inputStream.read();
-        offset += 1;
+        if (byteRead != -1) {
+            offset += 1;
+        }
         inputStream.close();
         migratable = true;
         return byteRead;
