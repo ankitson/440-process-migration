@@ -29,6 +29,7 @@ public class ZipUtility implements MigratableProcess {
             System.out.println("Usage: ZipUtility <filename>");
             throw new IllegalArgumentException();
         }
+        suspended = false;
         fileName = args[1];
         fos = new TransactionalFileOutputStream(fileName + ".zip");
         zos = new ZipOutputStream(fos);
@@ -37,9 +38,10 @@ public class ZipUtility implements MigratableProcess {
     }
 
     public void run() {
+        suspended = false;
         try {
             int nextByte = fis.read();
-            while (nextByte != -1) {
+            while (!suspended && nextByte != -1) {
                 zos.write(nextByte);
                 nextByte = fis.read();
             }
@@ -54,6 +56,14 @@ public class ZipUtility implements MigratableProcess {
             System.exit(-1);
         }
         System.out.println("Done compressing " + fileName +" !");
+    }
+
+    public boolean isReadyToMigrate() {
+        return fos.isMigratable() && fis.isMigratable();
+    }
+
+    public void suspend() {
+        suspended = true;
     }
 
 }
